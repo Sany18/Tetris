@@ -31,6 +31,7 @@ body {
   display: flex;
   justify-content: center;
   background: var(--background);
+  overscroll-behavior-y: contain;
 }
 
 #content {

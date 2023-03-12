@@ -64,6 +64,7 @@ window.onload = () => {
     lastTick: Date.now(),
     pause: false,
     score: 0,
+    touchDownPosition: null,
   }
 
   let squareSize = 1; // px
@@ -101,7 +102,6 @@ window.onload = () => {
     const canvasWidth = canvasHeight * fieldRatio;
 
     if (canvasContainerWidth < canvasWidth) {
-      console.log('resize canvas');
       canvas.width = canvasContainerWidth - 4;
       canvas.height = canvas.width / fieldRatio;
     } else {
@@ -260,8 +260,11 @@ window.onload = () => {
   }
 
   function canRotate(figure) {
-    if (!figure) return false;
-    return true;
+    const rotatedShape = getRotatedShapeOfFigure(figure, state.currentFigure.rotation + 1);
+    const coordinates = getFigureCoordinates({ ...figure, rotatedShape });
+    return coordinates.every(({ x, y }) => {
+      return state.filledElements[x] && state.filledElements[x][y] == 0;
+    });
   }
 
   function getAbsolutePosition(x, y) {
@@ -305,9 +308,10 @@ window.onload = () => {
     return coordinates;
   }
 
-  function getRotatedShapeOfFigure(figure) {
-    const { shape, rotation } = figure;
-    let rotatedShape = []
+  function getRotatedShapeOfFigure(figure, arbitraryRotation) {
+    const { shape } = figure;
+    const rotation = arbitraryRotation || figure.rotation;
+    let rotatedShape = [];
 
     if (rotation == 0) return shape;
     if (rotation == 1) {
@@ -361,5 +365,44 @@ window.onload = () => {
 
   window.addEventListener('resize', (e) => {
     resizeCanvas();
+  });
+
+  document.body.addEventListener('touchstart', (e) => {
+    const { clientX, clientY } = e.touches[0];
+    state.touchDownPosition = { x: clientX, y: clientY };
+  });
+
+  document.body.addEventListener('touchend', (e) => {
+    const { clientX, clientY } = e.changedTouches[0];
+    const { x, y } = state.touchDownPosition;
+    if (clientX == x && clientY == y) {
+      pressUp(true);
+    }
+  });
+
+  document.body.addEventListener('touchmove', (e) => {
+    const { clientX, clientY } = e.touches[0];
+    const { x, y } = state.touchDownPosition;
+    const trashold = ps() * 6;
+    const dx = clientX - x;
+    const dy = clientY - y;
+
+    if (Math.abs(dx) > Math.abs(dy)) {
+      if (dx > trashold) {
+        pressRight(true);
+        state.touchDownPosition.x = clientX;
+        state.touchDownPosition.y = clientY;
+      } else if (dx < -trashold) {
+        pressLeft(true);
+        state.touchDownPosition.x = clientX;
+        state.touchDownPosition.y = clientY;
+      }
+    } else {
+      if (dy > trashold) {
+        pressDown(true);
+        state.touchDownPosition.x = clientX;
+        state.touchDownPosition.y = clientY;
+      }
+    }
   });
 }
