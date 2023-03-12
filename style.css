@@ -1,0 +1,58 @@
+/* https://coolors.co/227c9d-17c3b2-ffcb77-fef9ef-fe6d73 */
+
+@import url('fonts/RobotoCondensed-Bold.ttf');
+@import url('fonts/RobotoCondensed-BoldItalic.ttf');
+@import url('fonts/RobotoCondensed-Italic.ttf');
+@import url('fonts/RobotoCondensed-Light.ttf');
+@import url('fonts/RobotoCondensed-LightItalic.ttf');
+@import url('fonts/RobotoCondensed-Regular.ttf');
+
+:root {
+  --background: #227C9D;
+  --cyan: #17C3B2;
+  --yellow: #ffcb77;
+  --white: #FEF9EF;
+  --red: #FE6D73;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 100%;
+  font-family: 'Roboto Condensed', sans-serif;
+  color: var(--yellow);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  background: var(--background);
+}
+
+#content {
+  flex: 1;
+  height: 100svh;
+  max-width: min(90vh, 100vw);
+  padding: 8px;
+  display: flex;
+}
+
+canvas {
+  border: var(--red) 4px solid;
+}
+
+#canvas-container {
+  flex: 1;
+}
+
+#sidebar {
+  width: 8rem;
+  display: flex;
+  height: 100%;
+  padding: .25rem;
+  font-size: 1.2rem;
+}
